@@ -1,0 +1,115 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+using range = pair<int,int>;
+using alloc = pair<range,int>;
+using Free = vector<range>;
+using alloclist = vector<alloc>;
+
+range r;
+auto [start,size] = r;
+
+int I = r.begin();
+
+alloc a;
+auto [allocated, leaseExpiry] = a;
+
+int J = a.begin();
+
+// Values used in the simulation
+const int Min_Lease = 40;
+const int Max_Lease = 70;
+int Lease;
+int LeaseExpiry;
+const int Min_Size = 50;
+const int Max_Size = 350;
+int Size;
+const int Time_Limit = 1000;
+const int Memory_Size = 1000;
+const int Request_Interval = 10;
+int Clock;
+
+// Report after simulation
+int Total_Requests;
+int Satisfied;
+int Unstatisfied;
+int Min_Size_Requested = 350;
+int Max_Size_Requested;
+int Shortest_Lease = 70;
+int Longest_Lease;
+int Average_Lease = 0;
+int Times_Merged;
+
+void Average(Lease L){ // calculates the average length of lease duration
+    Average_Lease = (L + Average_Lease) / Total_Requests;
+}
+
+void CreateRequest(){
+    srand(time(0));
+    Lease = rand() % (Max_Lease - Min_Lease + 1) + Min_Lease; // calculates a random lease value between 40 and 70
+    Size = rand() % (Max_Size - Min_Size + 1) + Min_Size; // calculates a random size value between 50 and 350
+    LeaseExpiry = Lease + Clock; // sets the leaseexpiry to the clock time please the duration of the lease
+    Total_Requests++;
+    if (Lease > Longest_Lease){ // checks to see if the new lease is longer then the longest
+        Longest_Lease = Lease;
+    }
+    if (Lease < Shortest_Lease){ // checks to see if the new lease is shorter then the shortest 
+        Shortest_Lease = Lease;
+    }
+    if (Size > Max_Size_Requested){ // checks to see if the new size is larger then the largest
+        Max_Size_Requested = Size;
+    }
+    if (Size > Min_Size_Requested){ // checks to see if the new size is smaller then the smallest
+        Min_Size_Requested = Size;
+    }
+    Average(Lease); // calls the average function each time a new lease is created so the average is always correct
+}
+
+void Merge(Free &f){
+
+}
+
+void checkLeaseExpiry(Free &f, alloclist &a, int Clock){
+    if (LeaseExpiry == Clock){
+        
+    }
+}
+
+bool Comp(const range &a, const range &b){
+    return a.first > b.first;
+}
+
+bool Comp(const alloc &a, const alloc &b){
+    return a.second > b.second;
+}
+
+void printalloc(alloclist &a){
+    for (auto e: a){
+        auto [r,Lease] = e;
+        auto [start,size] = r;
+        cout << "[" << start << ", " << size << ", " << Lease << "]";
+    }
+    cout << endl;
+}
+
+void printfree(free &f){
+    cout << "Free List";
+    for (auto e : f){
+        auto [start,size] = e;
+        cout << "[" << start << ", " << size << "]";
+    }
+    cout << endl;
+}
+
+void Report(){
+    cout << "Total Requests is: " << Total_Requests << endl;
+    cout << "Total Satisfied Requests is: " << Satisfied << endl;
+    cout << "Total Unsatisfied Requests is: " << Unstatisfied << endl;
+    cout << "Minimum Size Requested is: " << Min_Size_Requested << endl;
+    cout << "Maximum Size Requested is: " << Max_Size_Requested << endl;
+    cout << "Shortest Lease Requested is: " << Shortest_Lease << endl;
+    cout << "Longest Lease Requested is: " << Longest_Lease << endl;
+    cout << "Averega Lease Requested is: " << Average_Lease << endl;
+    cout << "Times Merged is: " << Times_Merged << endl;
+}
